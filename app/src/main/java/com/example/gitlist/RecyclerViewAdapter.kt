@@ -15,6 +15,11 @@ class RecyclerViewAdapter(private var postItems: ArrayList<PostItem>/*, private 
 
     }
 
+    fun setData(incomeList: ArrayList<PostItem>) {
+        postItems = incomeList
+        notifyDataSetChanged()
+    }
+
 /*    private val VIEW_TYPE_LOADING = 0
     private val VIEW_TYPE_NORMAL = 1
     private val isLoaderVisible = false*/

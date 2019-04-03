@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         for (i in 1..10) {
             item = PostItem("des", "time", "title")
-            item.description += "enter №$ENTER_COUNTER & $i"
+            item.description += " enter №$ENTER_COUNTER & $i"
             item.time += "$i"
             item.title += "$i"
             localItems.add(item)
@@ -79,12 +79,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onRefresh() {
-        ENTER_COUNTER = 0
+        //ENTER_COUNTER = 0
         currentPage = PAGE_START;
         isLastPage = false
-        mRecViewAdapter.clear()
-        mRecViewAdapter = RecyclerViewAdapter(items)
-        mRecyclerView.adapter = mRecViewAdapter
+        mRecViewAdapter.setData(getFakeData())
+        swipeRefresh.isRefreshing = false
     }
 
 }
