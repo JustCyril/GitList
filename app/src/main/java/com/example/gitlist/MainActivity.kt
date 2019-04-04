@@ -11,16 +11,19 @@ class MainActivity : AppCompatActivity() {
     lateinit var mRecyclerView: RecyclerView
     lateinit var swipeRefresh: SwipeRefreshLayout
     lateinit var mRecViewAdapter: RecyclerViewAdapter
-    var isLastPage: Boolean = false
-    var isLoading: Boolean = false
-    var ENTER_COUNTER = 0
-    val PAGE_START = 1
-    var currentPage = PAGE_START
+
+    var ENTER_COUNTER = 0 //counting times of entering into getFakeData()
+    val itemsCount = 0
+    var itemsOffset = itemsCount
     var items = getFakeData()
+    var ifRefreshed = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        startInit()
 
         mRecyclerView = findViewById(R.id.mRecyclerView)
         mRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -30,34 +33,43 @@ class MainActivity : AppCompatActivity() {
         swipeRefresh = findViewById(R.id.swipeRefresh)
         swipeRefresh.setOnRefreshListener { onRefresh() }
 
-        mRecyclerView.addOnScrollListener(object : PaginationScrollListener(LinearLayoutManager(this)) {
-            override fun isLastPage(): Boolean {
-                return isLastPage
-            }
-
-            override fun isLoading(): Boolean {
-                return isLoading
-            }
+        mRecyclerView.addOnScrollListener(object : PaginationScrollListener() {
 
             override fun loadMoreItems() {
-                isLoading = true
-                currentPage++
+                itemsOffset += 10
                 //you have to call loadmore items to get more data
                 getMoreItems()
             }
+
+            override fun checkRefresh(): Boolean {
+                    if (ifRefreshed) {
+                        ifRefreshed = false
+                        return true
+                    } else {
+                        return ifRefreshed
+                    }
+
+            }
+
         })
 
+    }
+
+    fun startInit() {
+        ENTER_COUNTER = 0 //counting times of entering into getFakeData()
+        itemsOffset = itemsCount
+        items = getFakeData()
     }
 
     fun getFakeData(): ArrayList<PostItem> {
         val localItems = ArrayList<PostItem>()
         ENTER_COUNTER++
 
-        var item = PostItem("des", "time", "title")
+        var item = PostItem()
 
         for (i in 1..10) {
-            item = PostItem("des", "time", "title")
-            item.description += " enter №$ENTER_COUNTER & $i"
+            item = PostItem("description", "time", "title")
+            item.description += " enter №$ENTER_COUNTER card №$i"
             item.time += "$i"
             item.title += "$i"
             localItems.add(item)
@@ -72,17 +84,15 @@ class MainActivity : AppCompatActivity() {
         // recyclerview adapter assuming your recyclerview adapter is
         //rvAdapter
         //after getting your data you have to assign false to isLoading
-        isLoading = false
 
         mRecViewAdapter.addData(getFakeData())
 
     }
 
     fun onRefresh() {
-        //ENTER_COUNTER = 0
-        currentPage = PAGE_START;
-        isLastPage = false
-        mRecViewAdapter.setData(getFakeData())
+        startInit()
+        ifRefreshed = true
+        mRecViewAdapter.setData(items)
         swipeRefresh.isRefreshing = false
     }
 

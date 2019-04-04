@@ -54,8 +54,4 @@ class RecyclerViewAdapter(private var postItems: ArrayList<PostItem>/*, private 
         notifyItemRangeChanged(size, sizeNew)
     }
 
-    fun clear() {
-        postItems.clear()
-    }
-
 }

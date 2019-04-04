@@ -11,4 +11,6 @@ import com.google.gson.annotations.SerializedName
 
 class PostItem (var description: String, var time: String, var title: String) {
 
+    constructor(): this(description = "", time = "", title = "") //empty constructor for free init
+
 }
